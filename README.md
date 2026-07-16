@@ -7,6 +7,11 @@ accept/decline booking requests and get paid a deposit up front.
 See [`docs/consumer-flow.md`](docs/consumer-flow.md) for the full MVP v1
 product spec (screen-by-screen flow, stack decisions, build order).
 
+CI (`.github/workflows/`) runs `flutter analyze` + `flutter test` on every
+`app/` change, and applies the Supabase migrations + seed against a real
+Postgres+PostGIS service container on every `supabase/` change (also
+checking `seed.sql` hasn't drifted from `generate_seed.py`).
+
 ## Stack
 
 - **Mobile app:** Flutter (Dart) — Android first, iOS is a flag flip later.

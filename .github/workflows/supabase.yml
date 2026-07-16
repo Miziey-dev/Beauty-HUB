@@ -1,0 +1,69 @@
+name: Supabase migrations
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/**'
+      - '.github/workflows/supabase.yml'
+  pull_request:
+    paths:
+      - 'supabase/**'
+      - '.github/workflows/supabase.yml'
+
+jobs:
+  migrate-and-seed:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: beautyhub_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      PGPASSWORD: postgres
+      PGHOST: localhost
+      PGUSER: postgres
+      PGDATABASE: beautyhub_ci
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check seed.sql is up to date with generate_seed.py
+        run: |
+          python3 scripts/generate_seed.py
+          git diff --exit-code supabase/seed.sql
+
+      # auth.users/auth.uid() are provided by Supabase's managed Postgres;
+      # stub the minimum needed for the migrations' foreign keys, triggers,
+      # and RLS policies to apply against plain Postgres in CI.
+      - name: Stub Supabase auth schema
+        run: |
+          psql -v ON_ERROR_STOP=1 <<'SQL'
+          create schema if not exists auth;
+          create table auth.users (id uuid primary key default gen_random_uuid(), phone text);
+          create or replace function auth.uid() returns uuid language sql stable as $$ select null::uuid $$;
+          SQL
+
+      - name: Apply migrations
+        run: |
+          for f in supabase/migrations/*.sql; do
+            echo "Applying $f"
+            psql -v ON_ERROR_STOP=1 -f "$f"
+          done
+
+      - name: Load seed data
+        run: psql -v ON_ERROR_STOP=1 -f supabase/seed.sql
+
+      - name: Sanity-check the discovery RPCs
+        run: |
+          psql -v ON_ERROR_STOP=1 <<'SQL'
+          select count(*) as salons from salons;
+          select count(*) as style_feed_rows from style_feed(-26.1929, 28.0305, 10);
+          SQL
