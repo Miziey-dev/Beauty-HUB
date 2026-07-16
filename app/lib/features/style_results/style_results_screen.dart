@@ -66,6 +66,17 @@ class _StyleResultsScreenState extends State<StyleResultsScreen> {
     );
   }
 
+  bool get _hasActiveFilters =>
+      _filters.maxPriceCents != null ||
+      _filters.minRating != null ||
+      _filters.mobileOnly ||
+      _filters.hairIncludedOnly;
+
+  void _clearFilters() {
+    setState(() => _filters = const StyleResultsFilters());
+    _load();
+  }
+
   @override
   Widget build(BuildContext context) {
     final location = context.watch<LocationController>();
@@ -115,7 +126,18 @@ class _StyleResultsScreenState extends State<StyleResultsScreen> {
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
                 : sortedItems.isEmpty
-                    ? const Center(child: Text(Strings.noSalonsMatchFilters))
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(Strings.noSalonsMatchFilters),
+                            if (_hasActiveFilters) ...[
+                              const SizedBox(height: 12),
+                              OutlinedButton(onPressed: _clearFilters, child: const Text(Strings.clear)),
+                            ],
+                          ],
+                        ),
+                      )
                     : _mapView
                         ? MapPlaceholder(
                             items: sortedItems,

@@ -64,4 +64,35 @@ void main() {
 
     expect(find.byType(SalonProfileScreen), findsOneWidget);
   });
+
+  testWidgets('an empty, over-filtered result offers a Clear filters action', (tester) async {
+    final dataSource = FakeDiscoveryDataSource();
+    final repo = DiscoveryRepository(dataSource);
+
+    await tester.pumpWidget(
+      wrapWithProviders(
+        const StyleResultsScreen(styleId: 'style-1', styleName: 'Knotless box braids, mid-back'),
+        repository: repo,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Filters'));
+    await tester.pumpAndSettle();
+
+    // Drag the price slider down to its minimum, well under both fixture prices.
+    await tester.drag(find.byType(Slider).first, const Offset(-1000, 0));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Apply'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('No salons match these filters yet'), findsOneWidget);
+    expect(find.text('Clear'), findsOneWidget);
+
+    await tester.tap(find.text('Clear'));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Zanele's Braids"), findsOneWidget);
+    expect(find.text('Clear'), findsNothing);
+  });
 }
