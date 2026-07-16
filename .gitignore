@@ -1,0 +1,13 @@
+.env
+.DS_Store
+
+# Flutter/Dart (once the app is scaffolded)
+.dart_tool/
+.packages
+build/
+*.iml
+.idea/
+
+# Supabase local dev
+.branches/
+.temp/
