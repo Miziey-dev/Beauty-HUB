@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../location/location_controller.dart';
 import '../../location/suburbs.dart';
-import '../home/home_screen.dart';
+import '../shell/main_shell.dart';
 
 /// Screen 1 -- Location permission (docs/consumer-flow.md).
 class LocationPermissionScreen extends StatefulWidget {
@@ -56,7 +56,7 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
 
   void _goHome() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
+      MaterialPageRoute(builder: (_) => const MainShell()),
     );
   }
 

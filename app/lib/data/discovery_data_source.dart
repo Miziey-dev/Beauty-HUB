@@ -85,7 +85,7 @@ class SupabaseDiscoveryDataSource implements DiscoveryDataSource {
     final row = await _client
         .from('salons')
         .select(
-          '*, salon_services(id, price_cents, duration_minutes, hair_included, is_active, styles(name, category_slug)), '
+          '*, salon_services(id, price_cents, duration_minutes, hair_included, hair_included_price_delta_cents, is_active, styles(name, category_slug)), '
           'salon_photos(photo_url, is_hero), reviews(id, rating, body, photo_urls, created_at)',
         )
         .eq('id', salonId)

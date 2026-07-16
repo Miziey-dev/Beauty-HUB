@@ -7,6 +7,7 @@ class SalonServiceRow {
   final int priceCents;
   final int durationMinutes;
   final bool hairIncluded;
+  final int hairIncludedPriceDeltaCents;
 
   const SalonServiceRow({
     required this.id,
@@ -15,6 +16,7 @@ class SalonServiceRow {
     required this.priceCents,
     required this.durationMinutes,
     required this.hairIncluded,
+    required this.hairIncludedPriceDeltaCents,
   });
 
   factory SalonServiceRow.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class SalonServiceRow {
       priceCents: json['price_cents'] as int,
       durationMinutes: json['duration_minutes'] as int,
       hairIncluded: json['hair_included'] as bool,
+      hairIncludedPriceDeltaCents: json['hair_included_price_delta_cents'] as int,
     );
   }
 }
@@ -56,6 +59,7 @@ class SalonProfile {
   final double ratingAvg;
   final int ratingCount;
   final String? whatsapp;
+  final Map<String, String> operatingHours;
   final List<SalonServiceRow> services;
   final List<SalonPhotoRow> photos;
   final List<Review> reviews;
@@ -72,6 +76,7 @@ class SalonProfile {
     required this.ratingAvg,
     required this.ratingCount,
     required this.whatsapp,
+    required this.operatingHours,
     required this.services,
     required this.photos,
     required this.reviews,
@@ -89,6 +94,8 @@ class SalonProfile {
         ratingAvg: (json['rating_avg'] as num).toDouble(),
         ratingCount: json['rating_count'] as int,
         whatsapp: json['whatsapp'] as String?,
+        operatingHours: (json['operating_hours'] as Map<String, dynamic>? ?? {})
+            .map((key, value) => MapEntry(key, value as String)),
         services: (json['salon_services'] as List<dynamic>? ?? [])
             .map((e) => SalonServiceRow.fromJson(e as Map<String, dynamic>))
             .toList(),

@@ -24,6 +24,8 @@ supabase/
   migrations/0002_discovery_rpcs.sql
                                style_feed / style_results RPCs for the
                                discovery screens (PostGIS "within N km")
+  migrations/0003_profile_extras.sql
+                               saved addresses + notification prefs on profiles
   seed.sql                    generated demo data: 36 salons around
                                Braamfontein/Johannesburg
   config.toml                 local Supabase CLI config
@@ -31,8 +33,7 @@ scripts/
   generate_seed.py            regenerates supabase/seed.sql deterministically
 docs/
   consumer-flow.md            product spec this schema implements
-app/                          Flutter app (Screens 1-4: location, style feed,
-                               style results, salon profile)
+app/                          Flutter app (all 8 screens from the spec)
 ```
 
 ## Database (build order step 1)
@@ -57,13 +58,16 @@ Copy `.env.example` to `.env` and fill in your Supabase, Paystack, Google
 Maps, and Firebase credentials — none of this repo's code should hardcode
 real keys.
 
-## Flutter app (build order step 2)
+## Flutter app
 
-`app/` is a standard Flutter project covering Screens 1-4 from
+`app/` is a Flutter project covering the full consumer flow from
 `docs/consumer-flow.md`: location permission, Style Feed, Style Results
-(list/map), and Salon Profile -- anonymous, read-only browsing wired to the
-Supabase schema above. Booking (Screen 5+) is deliberately not built yet;
-tapping Book shows a "coming in the next milestone" message.
+(list/map), Salon Profile, phone-OTP/Google auth, the booking request flow
+(service options → date/time → deposit & confirm), My Bookings, leaving a
+review, and Profile/Settings. Navigation between the top-level screens
+(Discover / Bookings / Profile) is a bottom nav shell
+(`lib/features/shell/main_shell.dart`) added to make Screens 2, 6, and 8
+reachable -- it isn't itself one of the spec's numbered screens.
 
 Supabase config is passed via `--dart-define` (not bundled as an asset, so
 no secrets ever land in the repo or the compiled app by accident):
@@ -78,26 +82,31 @@ flutter run \
 
 Without real credentials the app still builds and analyzes, but network
 calls will fail -- run the test suite instead, which exercises every screen
-against fake Supabase responses shaped like the real schema:
+against fakes shaped like the real Supabase schema:
 
 ```bash
 flutter analyze
 flutter test
 ```
 
-Map view (Screen 3's list/map toggle) currently plots real salon
-coordinates in a lightweight in-app scatter view rather than a real
-Google Map, since that needs a Maps API key; swap
-`lib/features/style_results/widgets/map_placeholder.dart` for a
-`google_maps_flutter` widget once one is configured.
+### Deliberately stubbed, pending real credentials/infra
 
-## Next steps
+Everything below is real, working code behind an interface (same pattern
+throughout: a `data/*_data_source.dart` + a fake used in tests) -- each just
+needs one piece of external setup before it does something for real:
 
-Per the build order in `docs/consumer-flow.md`:
+| Feature | Where | What's needed |
+| --- | --- | --- |
+| Map view (Screen 3) | `features/style_results/widgets/map_placeholder.dart` | Plots real salon coordinates in a lightweight in-app scatter view instead of a real map; swap for a `google_maps_flutter` widget once a Maps API key is configured. |
+| Paystack deposit (Screen 5c) | `data/payment_gateway.dart` | `StubPaystackGateway` simulates a successful charge; swap for a real Paystack checkout once a public key exists. |
+| Review photo storage (Screen 7) | `data/photo_upload_service.dart` | Uploads to a Supabase Storage bucket named `review-photos`, which needs creating (public read, authenticated write) via the dashboard or CLI -- not something a SQL migration creates. |
+| Google sign-in (Screen 5b) | `data/auth_data_source.dart` | Needs a custom URL scheme (`io.beautyhub.app://login-callback`) registered natively (AndroidManifest intent-filter / iOS URL type) for the OAuth redirect to return to the app. Phone OTP works as soon as Supabase Auth's SMS provider is configured. |
+| Push notifications | not yet built | Firebase Cloud Messaging setup (Screen 7's "how was your appointment" prompt, booking confirmations). |
+
+## Build order (docs/consumer-flow.md) -- status
 
 1. ✅ Supabase schema + seed data
-2. ✅ Flutter app: Style Feed → Style Results → Salon Profile (read-only,
-   demo-able to salons)
-3. Auth (phone OTP + Google) + booking request flow
-4. Paystack deposits + My Bookings
-5. Reviews + push notifications
+2. ✅ Style Feed → Style Results → Salon Profile (read-only, demo-able to salons)
+3. ✅ Auth (phone OTP + Google) + booking request flow (5a-5b)
+4. ✅ Deposit & confirm (5c, Paystack stubbed) + My Bookings
+5. ✅ Reviews (photo upload stubbed) -- push notifications still to do

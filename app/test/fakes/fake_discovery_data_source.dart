@@ -74,6 +74,7 @@ class FakeDiscoveryDataSource implements DiscoveryDataSource {
         'price_cents': 65000,
         'duration_minutes': 360,
         'hair_included': false,
+        'hair_included_price_delta_cents': 9750,
         'is_active': true,
         'styles': {'name': 'Knotless box braids, mid-back', 'category_slug': 'braids'},
       },

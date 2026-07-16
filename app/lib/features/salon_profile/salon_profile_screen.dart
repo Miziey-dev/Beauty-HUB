@@ -4,8 +4,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/formatting.dart';
 import '../../data/discovery_repository.dart';
+import '../../models/booking_draft.dart';
 import '../../models/category.dart';
 import '../../models/salon_profile.dart';
+import '../booking/service_options_screen.dart';
 import 'widgets/hero_gallery.dart';
 import 'widgets/reviews_section.dart';
 import 'widgets/services_section.dart';
@@ -45,10 +47,42 @@ class _SalonProfileScreenState extends State<SalonProfileScreen> {
     });
   }
 
-  void _bookingComingSoon() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Booking opens in the next milestone')),
+  void _startBooking(SalonServiceRow service) {
+    final profile = _profile!;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ServiceOptionsScreen(
+          draft: BookingDraft(
+            service: service,
+            salonId: profile.id,
+            salonName: profile.name,
+            salonAddress: profile.addressLine,
+            salonIsMobile: profile.isMobile,
+            salonAvgResponseMinutes: profile.avgResponseMinutes,
+            salonOperatingHours: profile.operatingHours,
+          ),
+        ),
+      ),
     );
+  }
+
+  Future<void> _pickServiceThenBook() async {
+    final profile = _profile!;
+    final service = await showModalBottomSheet<SalonServiceRow>(
+      context: context,
+      builder: (sheetContext) => ListView(
+        shrinkWrap: true,
+        children: [
+          for (final service in profile.services)
+            ListTile(
+              title: Text(service.styleName),
+              subtitle: Text(formatRandFromCents(service.priceCents)),
+              onTap: () => Navigator.of(sheetContext).pop(service),
+            ),
+        ],
+      ),
+    );
+    if (service != null) _startBooking(service);
   }
 
   Future<void> _contactSalon(String? whatsapp) async {
@@ -128,7 +162,7 @@ class _SalonProfileScreenState extends State<SalonProfileScreen> {
               ServicesSection(
                 servicesByCategory: profile.servicesByCategory,
                 categories: _categories,
-                onBook: (_) => _bookingComingSoon(),
+                onBook: _startBooking,
               ),
               const Divider(height: 1),
               ReviewsSection(
@@ -146,7 +180,7 @@ class _SalonProfileScreenState extends State<SalonProfileScreen> {
           padding: const EdgeInsets.all(12),
           child: profile.isClaimed
               ? FilledButton(
-                  onPressed: _bookingComingSoon,
+                  onPressed: _pickServiceThenBook,
                   style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
                   child: const Text('Book now'),
                 )

@@ -179,9 +179,13 @@ create table reviews (
 
 create index reviews_salon_idx on reviews (salon_id);
 
+-- security definer: a customer inserting a review only has RLS-scoped
+-- read/write on salons (public read + owner-only write), but rating
+-- refresh must always be allowed regardless of who triggered it.
 create function refresh_salon_rating()
 returns trigger
 language plpgsql
+security definer set search_path = public
 as $$
 declare
   target_salon_id uuid := coalesce(new.salon_id, old.salon_id);
