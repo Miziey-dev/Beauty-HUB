@@ -5,6 +5,7 @@ import '../../core/formatting.dart';
 import '../../data/auth_data_source.dart';
 import '../../data/booking_repository.dart';
 import '../../data/payment_gateway.dart';
+import '../../l10n/strings.dart';
 import '../../models/booking_draft.dart';
 import 'booking_success_screen.dart';
 
@@ -34,7 +35,7 @@ class _DepositConfirmScreenState extends State<DepositConfirmScreen> {
             bookingReference: '${draft.salonId}-${DateTime.now().millisecondsSinceEpoch}',
           );
       if (!result.success) {
-        setState(() => _error = result.errorMessage ?? 'Payment failed -- please try again');
+        setState(() => _error = result.errorMessage ?? Strings.paymentFailedDefault);
         return;
       }
       if (!mounted) return;
@@ -51,7 +52,7 @@ class _DepositConfirmScreenState extends State<DepositConfirmScreen> {
         MaterialPageRoute(builder: (_) => BookingSuccessScreen(booking: booking)),
       );
     } catch (e) {
-      setState(() => _error = 'Something went wrong: $e');
+      setState(() => _error = Strings.bookingCreationFailed(e));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -64,7 +65,7 @@ class _DepositConfirmScreenState extends State<DepositConfirmScreen> {
     final time = draft.timeSlot!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Deposit & confirm')),
+      appBar: AppBar(title: const Text(Strings.depositAndConfirm)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -80,21 +81,21 @@ class _DepositConfirmScreenState extends State<DepositConfirmScreen> {
                   const SizedBox(height: 4),
                   Text('${date.day}/${date.month}/${date.year} at ${time.format(context)}'),
                   const SizedBox(height: 4),
-                  Text(draft.isAtCustomer ? (draft.customerAddress ?? 'Your address') : (draft.salonAddress ?? draft.salonName)),
+                  Text(draft.isAtCustomer ? (draft.customerAddress ?? Strings.yourAddress) : (draft.salonAddress ?? draft.salonName)),
                   const Divider(height: 24),
-                  _PriceRow(label: 'Service', amountCents: draft.service.priceCents),
-                  if (draft.hairAdjustmentCents > 0) _PriceRow(label: 'Hair', amountCents: draft.hairAdjustmentCents),
-                  if (draft.travelFeeCents > 0) _PriceRow(label: 'Travel fee', amountCents: draft.travelFeeCents),
+                  _PriceRow(label: Strings.priceRowService, amountCents: draft.service.priceCents),
+                  if (draft.hairAdjustmentCents > 0) _PriceRow(label: Strings.priceRowHair, amountCents: draft.hairAdjustmentCents),
+                  if (draft.travelFeeCents > 0) _PriceRow(label: Strings.priceRowTravelFee, amountCents: draft.travelFeeCents),
                   const Divider(height: 24),
-                  _PriceRow(label: 'Deposit due now', amountCents: draft.depositAmountCents, bold: true),
-                  _PriceRow(label: 'Balance due at appointment', amountCents: draft.balanceDueCents),
+                  _PriceRow(label: Strings.priceRowDepositDueNow, amountCents: draft.depositAmountCents, bold: true),
+                  _PriceRow(label: Strings.priceRowBalanceDue, amountCents: draft.balanceDueCents),
                 ],
               ),
             ),
           ),
           const SizedBox(height: 16),
           const Text(
-            'Free cancellation until 48 hrs before; after that the deposit is forfeited.',
+            Strings.cancellationPolicy,
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
           const SizedBox(height: 24),
@@ -107,7 +108,7 @@ class _DepositConfirmScreenState extends State<DepositConfirmScreen> {
             style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
             child: _busy
                 ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                : Text('Pay ${formatRandFromCents(draft.depositAmountCents)} deposit'),
+                : Text(Strings.payDeposit(formatRandFromCents(draft.depositAmountCents))),
           ),
         ],
       ),

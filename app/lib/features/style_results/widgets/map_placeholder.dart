@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/formatting.dart';
+import '../../../l10n/strings.dart';
 import '../../../models/style_result_item.dart';
 
 /// Lightweight scatter-plot stand-in for the real map view. Plots real
@@ -25,7 +26,7 @@ class MapPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return const Center(child: Text('No salons to show on the map'));
+      return const Center(child: Text(Strings.noSalonsOnMap));
     }
 
     final lats = [userLat, ...items.map((i) => i.salonLat)];
@@ -98,7 +99,7 @@ class MapPlaceholder extends StatelessWidget {
                   Navigator.of(sheetContext).pop();
                   onViewSalon(item);
                 },
-                child: const Text('View salon'),
+                child: const Text(Strings.viewSalon),
               ),
             ),
           ],

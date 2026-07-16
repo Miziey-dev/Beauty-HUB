@@ -3,6 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/discovery_repository.dart';
+import '../../l10n/strings.dart';
 import '../../location/location_controller.dart';
 import '../../models/category.dart';
 import '../../models/salon_search_result.dart';
@@ -109,12 +110,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SliverToBoxAdapter(
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                        child: Text('Showing results a bit further out'),
+                        child: Text(Strings.showingResultsFurtherOut),
                       ),
                     ),
                   if (_filteredItems.isEmpty)
                     const SliverFillRemaining(
-                      child: Center(child: Text('No styles nearby yet -- check back soon')),
+                      child: Center(child: Text(Strings.noStylesNearby)),
                     )
                   else
                     SliverPadding(

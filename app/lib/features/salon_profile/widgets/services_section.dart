@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/formatting.dart';
+import '../../../l10n/strings.dart';
 import '../../../models/category.dart';
 import '../../../models/salon_profile.dart';
 
@@ -36,11 +37,11 @@ class ServicesSection extends StatelessWidget {
               title: Text(service.styleName),
               subtitle: Text(
                 '${formatRandFromCents(service.priceCents)} · ${formatDuration(service.durationMinutes)}'
-                '${service.hairIncluded ? ' · Hair included' : ''}',
+                '${service.hairIncluded ? ' · ${Strings.hairIncludedBadge}' : ''}',
               ),
               trailing: FilledButton(
                 onPressed: () => onBook(service),
-                child: const Text('Book'),
+                child: const Text(Strings.book),
               ),
             ),
         ],

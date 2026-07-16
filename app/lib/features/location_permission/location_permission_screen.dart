@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/strings.dart';
 import '../../location/location_controller.dart';
 import '../../location/suburbs.dart';
 import '../shell/main_shell.dart';
@@ -38,7 +39,7 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
         children: [
           const Padding(
             padding: EdgeInsets.all(16),
-            child: Text('Enter your suburb', style: TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(Strings.enterYourSuburb, style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           for (final suburb in seededSuburbs)
             ListTile(
@@ -73,7 +74,7 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
               const Icon(Icons.location_on, size: 72),
               const SizedBox(height: 24),
               const Text(
-                'We use your location to find stylists near you.',
+                Strings.locationExplainer,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -86,12 +87,12 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
                         width: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text('Use my location'),
+                    : const Text(Strings.useMyLocation),
               ),
               const SizedBox(height: 12),
               OutlinedButton(
                 onPressed: _showSuburbPicker,
-                child: const Text('Enter your suburb'),
+                child: const Text(Strings.enterYourSuburb),
               ),
             ],
           ),

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/formatting.dart';
+import '../../../l10n/strings.dart';
 import '../../../models/style_feed_item.dart';
 
 class StyleCard extends StatelessWidget {
@@ -43,7 +44,7 @@ class StyleCard extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 4),
-                  Text('from ${formatRandFromCents(item.priceFromCents)}'),
+                  Text(Strings.priceFrom(formatRandFromCents(item.priceFromCents))),
                   const SizedBox(height: 2),
                   Row(
                     children: [

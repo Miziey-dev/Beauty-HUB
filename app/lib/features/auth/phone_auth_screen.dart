@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/auth_data_source.dart';
+import '../../l10n/strings.dart';
 
 /// Auth gate (docs/consumer-flow.md, Screen 5b): phone OTP is primary,
 /// Google is the alternative. Pushed on top of the booking flow right
@@ -39,7 +40,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
       if (!mounted) return;
       setState(() => _step = _Step.enterCode);
     } catch (e) {
-      setState(() => _error = 'Could not send code: $e');
+      setState(() => _error = Strings.sendOtpFailed(e));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -58,7 +59,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
       if (!mounted) return;
       Navigator.of(context).pop(true);
     } catch (e) {
-      setState(() => _error = 'Incorrect code: $e');
+      setState(() => _error = Strings.verifyOtpFailed(e));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -74,7 +75,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
       if (!mounted) return;
       Navigator.of(context).pop(true);
     } catch (e) {
-      setState(() => _error = 'Google sign-in failed: $e');
+      setState(() => _error = Strings.googleSignInFailed(e));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -83,49 +84,49 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign in to continue')),
+      appBar: AppBar(title: const Text(Strings.signInToContinue)),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (_step == _Step.enterPhone) ...[
-              const Text('Enter your phone number and we will text you a code.'),
+              const Text(Strings.phoneOtpExplainer),
               const SizedBox(height: 16),
               TextField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(labelText: 'Phone number', border: OutlineInputBorder()),
+                decoration: const InputDecoration(labelText: Strings.phoneNumberLabel, border: OutlineInputBorder()),
               ),
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: _busy ? null : _sendOtp,
-                child: _busy ? const _Spinner() : const Text('Send code'),
+                child: _busy ? const _Spinner() : const Text(Strings.sendCode),
               ),
               const SizedBox(height: 12),
-              const Row(children: [Expanded(child: Divider()), Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text('or')), Expanded(child: Divider())]),
+              const Row(children: [Expanded(child: Divider()), Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text(Strings.or)), Expanded(child: Divider())]),
               const SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: _busy ? null : _signInWithGoogle,
                 icon: const Icon(Icons.g_mobiledata),
-                label: const Text('Continue with Google'),
+                label: const Text(Strings.continueWithGoogle),
               ),
             ] else ...[
-              Text('Enter the code sent to ${_phoneController.text.trim()}'),
+              Text(Strings.codeSentTo(_phoneController.text.trim())),
               const SizedBox(height: 16),
               TextField(
                 controller: _codeController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Verification code', border: OutlineInputBorder()),
+                decoration: const InputDecoration(labelText: Strings.verificationCodeLabel, border: OutlineInputBorder()),
               ),
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: _busy ? null : _verifyOtp,
-                child: _busy ? const _Spinner() : const Text('Verify'),
+                child: _busy ? const _Spinner() : const Text(Strings.verify),
               ),
               TextButton(
                 onPressed: _busy ? null : () => setState(() => _step = _Step.enterPhone),
-                child: const Text('Change number'),
+                child: const Text(Strings.changeNumber),
               ),
             ],
             if (_error != null) ...[

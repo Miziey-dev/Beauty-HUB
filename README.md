@@ -101,7 +101,14 @@ needs one piece of external setup before it does something for real:
 | Paystack deposit (Screen 5c) | `data/payment_gateway.dart` | `StubPaystackGateway` simulates a successful charge; swap for a real Paystack checkout once a public key exists. |
 | Review photo storage (Screen 7) | `data/photo_upload_service.dart` | Uploads to a Supabase Storage bucket named `review-photos`, which needs creating (public read, authenticated write) via the dashboard or CLI -- not something a SQL migration creates. |
 | Google sign-in (Screen 5b) | `data/auth_data_source.dart` | Needs a custom URL scheme (`io.beautyhub.app://login-callback`) registered natively (AndroidManifest intent-filter / iOS URL type) for the OAuth redirect to return to the app. Phone OTP works as soon as Supabase Auth's SMS provider is configured. |
-| Push notifications | not yet built | Firebase Cloud Messaging setup (Screen 7's "how was your appointment" prompt, booking confirmations). |
+| Push notifications | not yet built | Firebase Cloud Messaging setup (Screen 7's "how was your appointment" prompt, booking confirmations). Not started even behind a stub: `firebase_core`'s native Gradle plugin needs a real `google-services.json` just to build, unlike everything else above which is a pure Dart-level interface -- wiring it in without a real Firebase project would break `flutter build` for everyone else. |
+
+All UI copy lives in `lib/l10n/strings.dart` (a single `Strings` class) per
+the spec's cross-cutting rule -- "keep all strings in one localisation file
+so isiZulu etc. is a config job later." It's plain Dart constants, not
+Flutter's `gen-l10n`/ARB tooling, since actual locale-switching isn't
+needed yet -- swapping to that later just means running `flutter gen-l10n`
+against the strings already collected here as the source of truth.
 
 ## Build order (docs/consumer-flow.md) -- status
 

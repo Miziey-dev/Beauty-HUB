@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/formatting.dart';
 import '../../data/discovery_repository.dart';
+import '../../l10n/strings.dart';
 import '../../models/booking_draft.dart';
 import '../../models/category.dart';
 import '../../models/salon_profile.dart';
@@ -131,12 +132,12 @@ class _SalonProfileScreenState extends State<SalonProfileScreen> {
                     const SizedBox(height: 4),
                     Text(
                       profile.isMobile
-                          ? 'Mobile -- comes to you'
+                          ? Strings.mobileComesToYou
                           : (profile.addressLine ?? profile.suburb),
                     ),
                     if (profile.avgResponseMinutes != null) ...[
                       const SizedBox(height: 4),
-                      Text('Responds in ~${profile.avgResponseMinutes}min'),
+                      Text(Strings.respondsIn(profile.avgResponseMinutes!)),
                     ],
                     if (!profile.isClaimed) ...[
                       const SizedBox(height: 12),
@@ -150,7 +151,7 @@ class _SalonProfileScreenState extends State<SalonProfileScreen> {
                           children: [
                             Icon(Icons.info_outline, size: 18),
                             SizedBox(width: 8),
-                            Expanded(child: Text('Info from public listings -- own this salon? Claim it')),
+                            Expanded(child: Text(Strings.unclaimedSalonNotice)),
                           ],
                         ),
                       ),
@@ -182,12 +183,12 @@ class _SalonProfileScreenState extends State<SalonProfileScreen> {
               ? FilledButton(
                   onPressed: _pickServiceThenBook,
                   style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
-                  child: const Text('Book now'),
+                  child: const Text(Strings.bookNow),
                 )
               : OutlinedButton.icon(
                   onPressed: () => _contactSalon(profile.whatsapp),
                   icon: const Icon(Icons.chat_bubble_outline),
-                  label: const Text('Contact via WhatsApp'),
+                  label: const Text(Strings.contactViaWhatsApp),
                   style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
                 ),
         ),

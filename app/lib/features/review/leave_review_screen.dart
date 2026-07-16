@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../data/auth_data_source.dart';
 import '../../data/photo_upload_service.dart';
 import '../../data/review_repository.dart';
+import '../../l10n/strings.dart';
 
 /// Screen 7 -- Review flow (docs/consumer-flow.md): "photo upload strongly
 /// encouraged -- these feed the style feed with real local content."
@@ -64,7 +65,7 @@ class _LeaveReviewScreenState extends State<LeaveReviewScreen> {
       if (!mounted) return;
       Navigator.of(context).pop(true);
     } catch (e) {
-      setState(() => _error = 'Could not submit review: $e');
+      setState(() => _error = Strings.submitReviewFailed(e));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -73,11 +74,11 @@ class _LeaveReviewScreenState extends State<LeaveReviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Leave a review')),
+      appBar: AppBar(title: const Text(Strings.leaveAReviewTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text('How was your appointment?', style: TextStyle(fontSize: 16)),
+          const Text(Strings.howWasYourAppointment, style: TextStyle(fontSize: 16)),
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -95,7 +96,7 @@ class _LeaveReviewScreenState extends State<LeaveReviewScreen> {
             controller: _bodyController,
             maxLines: 4,
             decoration: const InputDecoration(
-              labelText: 'Tell us about it (optional)',
+              labelText: Strings.reviewBodyHint,
               border: OutlineInputBorder(),
             ),
           ),
@@ -103,7 +104,7 @@ class _LeaveReviewScreenState extends State<LeaveReviewScreen> {
           OutlinedButton.icon(
             onPressed: _pickPhotos,
             icon: const Icon(Icons.add_a_photo_outlined),
-            label: Text(_photos.isEmpty ? 'Show off the result' : '${_photos.length} photo(s) added'),
+            label: Text(_photos.isEmpty ? Strings.showOffTheResult : Strings.photosAdded(_photos.length)),
           ),
           if (_photos.isNotEmpty)
             SizedBox(
@@ -128,7 +129,7 @@ class _LeaveReviewScreenState extends State<LeaveReviewScreen> {
             style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
             child: _busy
                 ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                : const Text('Submit review'),
+                : const Text(Strings.submitReview),
           ),
         ],
       ),

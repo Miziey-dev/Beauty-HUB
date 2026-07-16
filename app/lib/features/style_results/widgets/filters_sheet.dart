@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/formatting.dart';
+import '../../../l10n/strings.dart';
 
 class StyleResultsFilters {
   final int? maxPriceCents;
@@ -84,8 +85,8 @@ class _FiltersSheetContentState extends State<_FiltersSheetContent> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Filters', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          Text('Price up to R${_maxPriceRand.round()}'),
+          const Text(Strings.filters, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          Text(Strings.priceUpTo(_maxPriceRand.round())),
           Slider(
             value: _maxPriceRand,
             min: 50,
@@ -94,24 +95,24 @@ class _FiltersSheetContentState extends State<_FiltersSheetContent> {
             label: 'R${_maxPriceRand.round()}',
             onChanged: (value) => setState(() => _maxPriceRand = value),
           ),
-          Text('Minimum rating: ${_minRating == 0 ? 'Any' : formatRatingBadge(_minRating)}'),
+          Text(Strings.minimumRating(_minRating == 0 ? Strings.any : formatRatingBadge(_minRating))),
           Slider(
             value: _minRating,
             min: 0,
             max: 5,
             divisions: 10,
-            label: _minRating == 0 ? 'Any' : _minRating.toStringAsFixed(1),
+            label: _minRating == 0 ? Strings.any : _minRating.toStringAsFixed(1),
             onChanged: (value) => setState(() => _minRating = value),
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Comes to you'),
+            title: const Text(Strings.comesToYou),
             value: _mobileOnly,
             onChanged: (value) => setState(() => _mobileOnly = value),
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Hair included'),
+            title: const Text(Strings.hairIncludedFilter),
             value: _hairIncludedOnly,
             onChanged: (value) => setState(() => _hairIncludedOnly = value),
           ),
@@ -121,7 +122,7 @@ class _FiltersSheetContentState extends State<_FiltersSheetContent> {
               Expanded(
                 child: OutlinedButton(
                   onPressed: () => Navigator.of(context).pop(const StyleResultsFilters()),
-                  child: const Text('Clear'),
+                  child: const Text(Strings.clear),
                 ),
               ),
               const SizedBox(width: 12),
@@ -136,7 +137,7 @@ class _FiltersSheetContentState extends State<_FiltersSheetContent> {
                       hairIncludedOnly: _hairIncludedOnly,
                     ),
                   ),
-                  child: const Text('Apply'),
+                  child: const Text(Strings.apply),
                 ),
               ),
             ],

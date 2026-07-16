@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/strings.dart';
 import '../../models/booking_draft.dart';
 import '../auth/phone_auth_screen.dart';
 import 'deposit_confirm_screen.dart';
@@ -53,11 +54,11 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
     final next30Days = List.generate(30, (i) => DateTime(today.year, today.month, today.day + i));
     final responseMinutes = widget.draft.salonAvgResponseMinutes;
     final confirmCopy = responseMinutes != null
-        ? '${widget.draft.salonName} confirms within ${responseMinutes}min'
-        : '${widget.draft.salonName} confirms within 2 hours';
+        ? Strings.confirmsWithinMinutes(widget.draft.salonName, responseMinutes)
+        : Strings.confirmsWithinDefault(widget.draft.salonName);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Date & time')),
+      appBar: AppBar(title: const Text(Strings.dateAndTime)),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -87,7 +88,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
           const Divider(height: 1),
           Expanded(
             child: _slots.isEmpty
-                ? const Center(child: Text('Closed this day -- pick another date'))
+                ? const Center(child: Text(Strings.closedThisDay))
                 : Padding(
                     padding: const EdgeInsets.all(12),
                     child: Wrap(
@@ -114,7 +115,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                   onPressed: _selectedSlot != null && !_busy ? _continue : null,
                   child: _busy
                       ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                      : const Text('Continue'),
+                      : const Text(Strings.continueLabel),
                 ),
               ],
             ),

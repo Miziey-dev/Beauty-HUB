@@ -1,3 +1,5 @@
+import '../l10n/strings.dart';
+
 /// One list/map card in Screen 3 (style results). Maps 1:1 to the
 /// `style_results` RPC row.
 class StyleResultItem {
@@ -55,10 +57,10 @@ enum ResultSort { recommended, nearest, cheapest, topRated }
 
 extension ResultSortLabel on ResultSort {
   String get label => switch (this) {
-        ResultSort.recommended => 'Recommended',
-        ResultSort.nearest => 'Nearest',
-        ResultSort.cheapest => 'Cheapest',
-        ResultSort.topRated => 'Top rated',
+        ResultSort.recommended => Strings.sortRecommended,
+        ResultSort.nearest => Strings.sortNearest,
+        ResultSort.cheapest => Strings.sortCheapest,
+        ResultSort.topRated => Strings.sortTopRated,
       };
 }
 

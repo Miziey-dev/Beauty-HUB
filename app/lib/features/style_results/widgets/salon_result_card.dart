@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/formatting.dart';
+import '../../../l10n/strings.dart';
 import '../../../models/style_result_item.dart';
 
 class SalonResultCard extends StatelessWidget {
@@ -50,9 +51,9 @@ class SalonResultCard extends StatelessWidget {
                     Wrap(
                       spacing: 6,
                       children: [
-                        if (item.isVerified) const _Badge(label: 'Verified', icon: Icons.verified),
-                        if (item.isMobile) const _Badge(label: 'Mobile', icon: Icons.directions_car),
-                        if (item.hairIncluded) const _Badge(label: 'Hair included', icon: Icons.check_circle),
+                        if (item.isVerified) const _Badge(label: Strings.verifiedBadge, icon: Icons.verified),
+                        if (item.isMobile) const _Badge(label: Strings.mobileBadge, icon: Icons.directions_car),
+                        if (item.hairIncluded) const _Badge(label: Strings.hairIncludedBadge, icon: Icons.check_circle),
                       ],
                     ),
                   ],

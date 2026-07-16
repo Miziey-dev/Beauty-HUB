@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../../../l10n/strings.dart';
 import '../../../models/review.dart';
 
 class ReviewsSection extends StatelessWidget {
@@ -28,7 +29,7 @@ class ReviewsSection extends StatelessWidget {
     if (reviews.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(16),
-        child: Text('No reviews yet'),
+        child: Text(Strings.noReviewsYet),
       );
     }
     final breakdown = _breakdown;

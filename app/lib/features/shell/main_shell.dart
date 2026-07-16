@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../data/auth_data_source.dart';
 import '../../features/auth/phone_auth_screen.dart';
+import '../../l10n/strings.dart';
 import '../home/home_screen.dart';
 import '../my_bookings/my_bookings_screen.dart';
 import '../profile/profile_screen.dart';
@@ -40,9 +41,9 @@ class _MainShellState extends State<MainShell> {
         selectedIndex: _index,
         onDestinationSelected: _onTap,
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.style_outlined), selectedIcon: Icon(Icons.style), label: 'Discover'),
-          NavigationDestination(icon: Icon(Icons.event_note_outlined), selectedIcon: Icon(Icons.event_note), label: 'Bookings'),
-          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
+          NavigationDestination(icon: Icon(Icons.style_outlined), selectedIcon: Icon(Icons.style), label: Strings.navDiscover),
+          NavigationDestination(icon: Icon(Icons.event_note_outlined), selectedIcon: Icon(Icons.event_note), label: Strings.navBookings),
+          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: Strings.navProfile),
         ],
       ),
     );

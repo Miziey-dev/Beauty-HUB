@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/discovery_repository.dart';
+import '../../l10n/strings.dart';
 import '../../location/location_controller.dart';
 import '../../models/style_result_item.dart';
 import '../salon_profile/salon_profile_screen.dart';
@@ -76,7 +77,7 @@ class _StyleResultsScreenState extends State<StyleResultsScreen> {
         actions: [
           IconButton(
             icon: Icon(_mapView ? Icons.view_list : Icons.map_outlined),
-            tooltip: _mapView ? 'List view' : 'Map view',
+            tooltip: _mapView ? Strings.listView : Strings.mapView,
             onPressed: () => setState(() => _mapView = !_mapView),
           ),
         ],
@@ -89,7 +90,7 @@ class _StyleResultsScreenState extends State<StyleResultsScreen> {
               children: [
                 OutlinedButton.icon(
                   icon: const Icon(Icons.tune, size: 18),
-                  label: const Text('Filters'),
+                  label: const Text(Strings.filters),
                   onPressed: () async {
                     final result = await showFiltersSheet(context, _filters);
                     if (result != null) {
@@ -114,7 +115,7 @@ class _StyleResultsScreenState extends State<StyleResultsScreen> {
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
                 : sortedItems.isEmpty
-                    ? const Center(child: Text('No salons match these filters yet'))
+                    ? const Center(child: Text(Strings.noSalonsMatchFilters))
                     : _mapView
                         ? MapPlaceholder(
                             items: sortedItems,

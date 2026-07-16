@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/formatting.dart';
 import '../../data/booking_repository.dart';
+import '../../l10n/strings.dart';
 import '../../models/my_booking.dart';
 import '../review/leave_review_screen.dart';
 import '../salon_profile/salon_profile_screen.dart';
@@ -43,15 +44,13 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Cancel this booking?'),
+        title: const Text(Strings.cancelThisBookingTitle),
         content: Text(
-          freeCancel
-              ? 'Free cancellation -- your deposit will be refunded.'
-              : "It's within 48 hrs of the appointment, so your deposit will be forfeited.",
+          freeCancel ? Strings.freeCancellationNotice : Strings.forfeitCancellationNotice,
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: const Text('Keep booking')),
-          FilledButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: const Text('Cancel booking')),
+          TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: const Text(Strings.keepBooking)),
+          FilledButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: const Text(Strings.cancelBooking)),
         ],
       ),
     );
@@ -76,8 +75,8 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('My Bookings'),
-          bottom: const TabBar(tabs: [Tab(text: 'Upcoming'), Tab(text: 'Past')]),
+          title: const Text(Strings.myBookings),
+          bottom: const TabBar(tabs: [Tab(text: Strings.upcomingTab), Tab(text: Strings.pastTab)]),
         ),
         body: _loading
             ? const Center(child: CircularProgressIndicator())
@@ -87,7 +86,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
                   children: [
                     _BookingList(
                       bookings: upcoming,
-                      emptyMessage: 'No upcoming bookings yet',
+                      emptyMessage: Strings.noUpcomingBookings,
                       builder: (booking) => _UpcomingCard(
                         booking: booking,
                         onCancel: () => _cancel(booking),
@@ -96,7 +95,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
                     ),
                     _BookingList(
                       bookings: past,
-                      emptyMessage: 'No past bookings yet',
+                      emptyMessage: Strings.noPastBookings,
                       builder: (booking) => _PastCard(booking: booking, onReviewed: _load),
                     ),
                   ],
@@ -136,11 +135,11 @@ Color _statusColor(BuildContext context, String status) => switch (status) {
     };
 
 String _statusLabel(String status) => switch (status) {
-      'pending' => 'Awaiting confirmation',
-      'confirmed' => 'Confirmed',
-      'declined' => 'Declined -- refunded',
-      'cancelled' => 'Cancelled',
-      'completed' => 'Completed',
+      'pending' => Strings.statusAwaitingConfirmation,
+      'confirmed' => Strings.statusConfirmed,
+      'declined' => Strings.statusDeclined,
+      'cancelled' => Strings.statusCancelled,
+      'completed' => Strings.statusCompleted,
       _ => status,
     };
 
@@ -179,13 +178,13 @@ class _UpcomingCard extends StatelessWidget {
               Wrap(
                 spacing: 8,
                 children: [
-                  OutlinedButton(onPressed: onDirections, child: const Text('Get directions')),
-                  OutlinedButton(onPressed: onCancel, child: const Text('Cancel')),
+                  OutlinedButton(onPressed: onDirections, child: const Text(Strings.getDirections)),
+                  OutlinedButton(onPressed: onCancel, child: const Text(Strings.cancel)),
                 ],
               ),
             if (booking.status == 'declined' || booking.status == 'cancelled') ...[
               const Divider(height: 24),
-              const Text('You might also like', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(Strings.youMightAlsoLike, style: TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               SimilarStylistsRow(styleId: booking.styleId, excludeSalonId: booking.salonId),
             ],
@@ -221,11 +220,11 @@ class _PastCard extends StatelessWidget {
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => SalonProfileScreen(salonId: booking.salonId)),
                   ),
-                  child: const Text('Book again'),
+                  child: const Text(Strings.bookAgain),
                 ),
                 if (booking.status == 'completed')
                   booking.hasReview
-                      ? const Chip(label: Text('Reviewed'))
+                      ? const Chip(label: Text(Strings.reviewed))
                       : FilledButton(
                           onPressed: () async {
                             final submitted = await Navigator.of(context).push<bool>(
@@ -235,7 +234,7 @@ class _PastCard extends StatelessWidget {
                             );
                             if (submitted == true) onReviewed();
                           },
-                          child: const Text('Leave a review'),
+                          child: const Text(Strings.leaveAReview),
                         ),
               ],
             ),

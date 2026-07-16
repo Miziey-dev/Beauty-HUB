@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/auth_data_source.dart';
 import '../../data/profile_repository.dart';
+import '../../l10n/strings.dart';
 import '../../models/salon_search_result.dart';
 import '../../models/user_profile.dart';
 import '../location_permission/location_permission_screen.dart';
@@ -54,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _saveName() async {
     await context.read<ProfileRepository>().updateName(_userId, _nameController.text.trim());
     await _load();
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Saved')));
+    if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(Strings.saved)));
   }
 
   Future<void> _addAddress() async {
@@ -99,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final profile = _profile!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
+      appBar: AppBar(title: const Text(Strings.profile)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -108,13 +109,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           TextField(
             controller: _nameController,
             decoration: InputDecoration(
-              labelText: 'Name',
+              labelText: Strings.nameLabel,
               border: const OutlineInputBorder(),
               suffixIcon: IconButton(icon: const Icon(Icons.check), onPressed: _saveName),
             ),
           ),
           const Divider(height: 32),
-          const Text('Saved addresses', style: TextStyle(fontWeight: FontWeight.bold)),
+          const Text(Strings.savedAddresses, style: TextStyle(fontWeight: FontWeight.bold)),
           for (final address in profile.savedAddresses)
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -126,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Expanded(
                 child: TextField(
                   controller: _addressController,
-                  decoration: const InputDecoration(hintText: 'Add an address'),
+                  decoration: const InputDecoration(hintText: Strings.addAnAddressHint),
                 ),
               ),
               IconButton(icon: const Icon(Icons.add), onPressed: _addAddress),
@@ -135,14 +136,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const Divider(height: 32),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Push notifications'),
-            subtitle: const Text('Booking confirmations and reminders'),
+            title: const Text(Strings.pushNotifications),
+            subtitle: const Text(Strings.pushNotificationsSubtitle),
             value: profile.pushNotificationsEnabled,
             onChanged: _togglePush,
           ),
           const Divider(height: 32),
-          const Text('Favourite salons', style: TextStyle(fontWeight: FontWeight.bold)),
-          if (_favourites.isEmpty) const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Text('None yet'))
+          const Text(Strings.favouriteSalons, style: TextStyle(fontWeight: FontWeight.bold)),
+          if (_favourites.isEmpty) const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Text(Strings.noFavouritesYet))
           else
             for (final favourite in _favourites)
               ListTile(
@@ -157,24 +158,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.help_outline),
-            title: const Text('Help & contact'),
+            title: const Text(Strings.helpAndContact),
             onTap: () => launchUrl(Uri.parse('mailto:support@beautyhub.app')),
           ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.description_outlined),
-            title: const Text('Terms & Conditions'),
+            title: const Text(Strings.termsAndConditions),
             onTap: () => showDialog(
               context: context,
               builder: (dialogContext) => AlertDialog(
-                title: const Text('Terms & Conditions'),
-                content: const SingleChildScrollView(child: Text('Placeholder terms for the MVP.')),
-                actions: [TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: const Text('Close'))],
+                title: const Text(Strings.termsAndConditions),
+                content: const SingleChildScrollView(child: Text(Strings.termsPlaceholder)),
+                actions: [TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: const Text(Strings.close))],
               ),
             ),
           ),
           const SizedBox(height: 16),
-          OutlinedButton(onPressed: _signOut, child: const Text('Sign out')),
+          OutlinedButton(onPressed: _signOut, child: const Text(Strings.signOut)),
         ],
       ),
     );
