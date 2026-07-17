@@ -15,6 +15,7 @@ import 'data/review_data_source.dart';
 import 'data/review_repository.dart';
 import 'features/location_permission/location_permission_screen.dart';
 import 'location/location_controller.dart';
+import 'theme/app_theme.dart';
 
 class BeautyHubApp extends StatelessWidget {
   const BeautyHubApp({super.key});
@@ -45,7 +46,7 @@ class BeautyHubApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Beauty HuB',
-        theme: ThemeData(colorSchemeSeed: Colors.pink, useMaterial3: true),
+        theme: bhTheme,
         home: const LocationPermissionScreen(),
       ),
     );
